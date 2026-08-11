@@ -8,6 +8,7 @@ use App\Models\Penjualan;
 use App\Models\DetailBarangKeluar;
 use App\Models\Barang;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PenjualanController extends Controller
 {
@@ -70,6 +71,7 @@ class PenjualanController extends Controller
 
         //simpan hanya ke tabel penjualan
         $penjualan = Penjualan::create([
+            'user_id' => Auth::id(),
             'nomor_nota' => $request->nomor_nota,
             'tanggal' => now(),
             'id_pelanggan' => $request->id_pelanggan,

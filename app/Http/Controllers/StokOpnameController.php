@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\StokOpname;
 use App\Models\Barang;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class StokOpnameController extends Controller
@@ -44,6 +45,7 @@ class StokOpnameController extends Controller
 
         // Simpan data stok opname
         StokOpname::create([
+            'user_id' => Auth::id(),
             'barang_id' => $request->barang_id,
             'tanggal' => $request->tanggal,
             'stok_fisik' => $request->stok_fisik,

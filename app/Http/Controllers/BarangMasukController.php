@@ -7,6 +7,7 @@ use App\Models\Barang;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;   //Wajib dipanggil untuk fitur DB Transaction
 
 class BarangMasukController extends Controller
@@ -43,7 +44,9 @@ class BarangMasukController extends Controller
         // Menggunakan DB Transaction untuk memastikan integritas data
         DB::transaction(function () use ($request) {
             // Simpan data barang masuk
-            $barangMasuk = BarangMasuk::create($request->all());
+            $data = $request->all();
+            $data['user_id'] = Auth::id();
+            $barangMasuk = BarangMasuk::create($data);
 
             // Update stok barang terkait
             $barang = Barang::findOrFail($request->id_barang);

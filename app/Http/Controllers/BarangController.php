@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Barang;
 use App\Models\Supplier; 
 use App\Models\KategoriBarang; // ✅ Panggil model kategori di atas
+use App\Models\HargaBarangHistory; // Panggil model harga barang history
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BarangController extends Controller
 {
@@ -44,7 +46,6 @@ class BarangController extends Controller
             'stok'               => $request->stok,
         ]);
 
-        return redirect('/barang')->with('sukses', 'Data barang berhasil ditambahkan!');
     }
 
     public function edit(Barang $barang)
@@ -65,8 +66,39 @@ class BarangController extends Controller
             'stok'               => 'required|numeric',
         ]);
 
+
+                // tambahan  baru pencatatan riwayat harga barang baru
+
+
+        //SIMPAN HARGA LAMA DI DATABASE SEBELUM DI TIMPA
+        $hargaBelilama = $barang->harga_beli ?? 0; // Ambil harga beli lama, jika tidak ada set ke 0
+        $hargaJuallama = $barang->harga_jual ?? 0; // Ambil harga jual lama, jika tidak ada set ke 0
+
+
+        //AMBIL HARGA BELI BARU  DARI FORM  (ATAU SET 0 JIKKA FORM BELUM ADA INPUT HARGA BELI)
+        $hargaBeliBaru = $request->harga_beli ?? 0;
+
+        //AMBIL HARGA JUAL BARU  DARI FORM  (ATAU SET 0 JIKKA FORM BELUM ADA INPUT HARGA JUAL)
+        $hargaJualBaru = $request->harga_jual ?? 0;
+
+        //CEK JIKA ADA PERUBAHAN PADA HARGA BELI ATAU HARGA JUAL
+        if ($hargaBeliBaru != $hargaBelilama || $hargaJualBaru != $hargaJuallama) {
+
+
+        // CATAT OTOMATIS KE BUKU RIWAYAT HARGA BARANG
+        HargaBarangHistory::create([
+            'user_id' => Auth::id(),
+            'barang_id' => $barang->id,
+            'harga_beli_lama' => $hargaBelilama,
+            'harga_beli_baru' => $hargaBeliBaru,
+            'harga_jual_lama' => $hargaJuallama,
+            'harga_jual_baru' => $hargaJualBaru
+        ]);
+    }
+
+        // UPDATE DATA BARANG di database
         $barang->update([
-            'kategori_barang_id' => $request->kategori_barang_id, // ✅ Update kolom baru
+            'kategori_barang_id' => $request->kategori_barang_id, // ✅ Simpan kolom baru
             'id_supplier'        => $request->id_supplier,
             'nama_barang'        => $request->nama_barang,
             'harga_jual'         => $request->harga_jual,

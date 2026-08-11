@@ -5,18 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class StokOpname extends Model
+class HargaBarangHistory extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'user_id',
         'barang_id',
-        'tanggal',
-        'stok_fisik',
-        'stok_sistem',
-        'selisih',
-        'keterangan'
+        'harga_beli_lama',
+        'harga_beli_baru',
+        'harga_jual_lama',
+        'harga_jual_baru'
     ];
 
     public function user()
@@ -24,7 +23,6 @@ class StokOpname extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    //relasi stok opname ke barang
     public function barang()
     {
         return $this->belongsTo(Barang::class, 'barang_id');

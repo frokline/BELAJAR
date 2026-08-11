@@ -12,6 +12,7 @@ class BarangMasuk extends Model
     protected $table = 'barang_masuks';
 
     protected $fillable = [
+        'user_id',
         'tanggal_masuk',
         'id_barang',
         'id_supplier',
@@ -19,6 +20,11 @@ class BarangMasuk extends Model
         'harga_beli',
         'keterangan',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 
     // Relasi ke model Barang
     public function barang()

@@ -10,6 +10,7 @@ class Penjualan extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'nomor_nota',
         'tanggal',
         'id_pelanggan',
@@ -22,6 +23,11 @@ class Penjualan extends Model
         'metode_pembayaran',
         'status'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 
     //relasi penjualan ke pelanggan
     public function pelanggan()
