@@ -5,47 +5,62 @@
     <title>Daftar Penjualan</title>
 </head>
 <body>
-    <h1>Manajemen Toko - Daftar Penjualan</h1>
+    <h1>Daftar Transaksi Penjualan</h1>
 
-    <!-- Notifikasi sukses -->
     @if(session('sukses'))
-        <p style="color: green;"><b>{{ session('sukses') }}</b></p>
+        <p style="color: green;"><strong>{{ session('sukses') }}</strong></p>
     @endif
 
-    <p>
-        <a href="/penjualan/tambah"><button type="button">Tambah Transaksi Penjualan Baru</button></a>
-    </p>    
+    <p><a href="/penjualan/tambah"><button type="button">Tambah Penjualan Baru</button></a></p>
     <br>
 
-    <h3>Riwayat Transaksi Penjualan</h3>
-    <table border="1" cellpadding="8" cellspacing="0">
+    <table border="1" cellpadding="6" cellspacing="0">
         <thead>
             <tr>
-                <th>No. Nota</th>
+                <th>No</th>
+                <th>Nomor Nota</th>
                 <th>Tanggal</th>
                 <th>Pelanggan</th>
-                <th>Total Belanja</th>
-                <th>Metode Bayar</th>
+                <th>Rincian Barang</th>
+                <th>Total</th>
+                <th>Bayar</th>
+                <th>Kembalian</th>
                 <th>Status</th>
                 <th>Aksi</th>
             </tr>
         </thead>
         <tbody>
-            @forelse($semuaPenjualan as $p)
+            @forelse($semuaPenjualan as $index => $penjualan)
                 <tr>
-                    <td>{{ $p->nomor_nota }}</td>
-                    <td>{{ $p->tanggal }}</td>
-                    <td>{{ $p->pelanggan ? $p->pelanggan->nama_pelanggan : 'Umum / Anonim' }}</td>
-                    <td>Rp {{ number_format($p->total, 0, ',', '.') }}</td>
-                    <td>{{ strtoupper($p->metode_pembayaran) }}</td>
-                    <td><b>{{ strtoupper($p->status) }}</b></td>
+                    <td>{{ $index + 1 }}</td>
+                    <td><b>{{ $penjualan->nomor_nota }}</b></td>
+                    <td>{{ $penjualan->tanggal }}</td>
+                    <td>{{ optional($penjualan->pelanggan)->nama_pelanggan ?? 'Umum / Anonim' }}</td>
                     <td>
-                        <a href="/penjualan/{{ $p->id }}">Lihat Nota</a>
+                        @if($penjualan->detailBarangKeluars && $penjualan->detailBarangKeluars->count() > 0)
+                            <ul style="margin: 0; padding-left: 15px;">
+                                @foreach($penjualan->detailBarangKeluars as $detail)
+                                    <li>
+                                        {{ optional($detail->barang)->nama_barang ?? 'Barang Terhapus' }} 
+                                        ({{ $detail->jumlah_keluar }} pcs)
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @else
+                            <i>Tidak ada item</i>
+                        @endif
+                    </td>
+                    <td>Rp {{ number_format($penjualan->total, 0, ',', '.') }}</td>
+                    <td>Rp {{ number_format($penjualan->bayar, 0, ',', '.') }}</td>
+                    <td>Rp {{ number_format($penjualan->kembalian, 0, ',', '.') }}</td>
+                    <td><b>{{ strtoupper($penjualan->status) }}</b></td>
+                    <td>
+                        <a href="/penjualan/{{ $penjualan->id }}">Lihat</a>
                     </td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="7">Belum ada data transaksi penjualan.</td>
+                    <td colspan="10">Belum ada data penjualan.</td>
                 </tr>
             @endforelse
         </tbody>

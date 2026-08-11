@@ -7,6 +7,7 @@ use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\KategoriBarangController; // 1. Kita panggil Manajer Kategori Barang di sini
 use App\Http\Controllers\BarangMasukController;
 use App\Http\Controllers\PenjualanController;// 1. Kita panggil Manajer Barang Masuk di sini
+use App\Http\Controllers\StokOpnameController; // 1. Kita panggil Manajer Stok Opname di sini
 use Illuminate\Support\Facades\Route;
 
 // Halaman Utama Website
@@ -73,6 +74,13 @@ Route::get('/barang/hapus/{barang}', [BarangController::class, 'destroy']);
     Route::get('/penjualan/{id}', [PenjualanController::class, 'show']);
     Route::get('/penjualan/hapus/{penjualan}', [PenjualanController::class, 'destroy']);
 
+//Route Halaman Stok Opname (Bisa ditaruh di sini)
+    Route::get('/stok-opname', [StokOpnameController::class, 'index'])
+        ->name('stok-opname.index');
+    Route::get('/stok-opname/tambah', [StokOpnameController::class, 'create'])
+        ->name('stok-opname.create');
+    Route::post('/stok-opname/simpan', [StokOpnameController::class, 'store'])
+        ->name('stok-opname.store');
 
 
 

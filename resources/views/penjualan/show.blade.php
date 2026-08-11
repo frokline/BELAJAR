@@ -20,7 +20,7 @@
         </tr>
         <tr>
             <td><b>Pelanggan</b></td>
-            <td>: {{ $penjualan->pelanggan ? $penjualan->pelanggan->nama_pelanggan : 'Umum / Anonim' }}</td>
+            <td>: {{ optional($penjualan->pelanggan)->nama_pelanggan ?? 'Umum / Anonim' }}</td>
         </tr>
         <tr>
             <td><b>Metode Bayar</b></td>
@@ -33,6 +33,36 @@
     </table>
 
     <br>
+    <h3>Rincian Item Barang</h3>
+    <table border="1" cellpadding="8" cellspacing="0">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Nama Barang</th>
+                <th>Harga Satuan</th>
+                <th>Jumlah</th>
+                <th>Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($penjualan->detailBarangKeluars as $index => $detail)
+                <tr>
+                    <td>{{ $index + 1 }}</td>
+                    <td>{{ optional($detail->barang)->nama_barang ?? 'Barang Terhapus' }}</td>
+                    <td>Rp {{ number_format($detail->harga_jual, 0, ',', '.') }}</td>
+                    <td>{{ $detail->jumlah_keluar }}</td>
+                    <td>Rp {{ number_format($detail->subtotal, 0, ',', '.') }}</td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="5">Tidak ada item barang pada nota ini.</td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+
+    <br>
+    <h3>Ringkasan Pembayaran</h3>
     <table border="1" cellpadding="8" cellspacing="0">
         <tr>
             <th>Subtotal</th>
@@ -56,7 +86,7 @@
         </tr>
         <tr>
             <th>Kembalian</th>
-            <td>Rp {{ number_format($penjualan->kembali, 0, ',', '.') }}</td>
+            <td>Rp {{ number_format($penjualan->kembalian, 0, ',', '.') }}</td>
         </tr>
     </table>
 </body>
